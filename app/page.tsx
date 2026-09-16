@@ -1,47 +1,108 @@
+'use client'
+
+import { useState } from 'react'
+import {
+  ArrowRight,
+  BarChart3,
+  BookOpen,
+  Check,
+  ChevronDown,
+  CircleHelp,
+  Code2,
+  Copy,
+  CreditCard,
+  Gauge,
+  KeyRound,
+  Layers3,
+  Menu,
+  Plus,
+  Search,
+  ShieldCheck,
+  Sparkles,
+  Terminal,
+  TrendingUp,
+  X,
+  Zap,
+} from 'lucide-react'
+
+const models = [
+  { name: 'Claude 3.5 Sonnet', provider: 'Anthropic', type: 'Chat', price: '$3.00 / $15.00', tag: 'Popular', tone: 'violet' },
+  { name: 'GPT-4o', provider: 'OpenAI', type: 'Chat', price: '$2.50 / $10.00', tag: 'Fast', tone: 'green' },
+  { name: 'Gemini 1.5 Pro', provider: 'Google', type: 'Chat', price: '$1.25 / $5.00', tag: '1M context', tone: 'blue' },
+  { name: 'Llama 3.1 405B', provider: 'Meta', type: 'Open source', price: '$2.00 / $2.00', tag: 'New', tone: 'orange' },
+]
+
+const plans = [
+  { name: 'Hobby', price: '$0', detail: 'For exploring and prototyping', features: ['5,000 requests / month', 'Access to all models', 'Community support'], cta: 'Start for free' },
+  { name: 'Pro', price: '$20', detail: 'For builders shipping to production', features: ['100,000 requests / month', 'Priority routing', 'Usage analytics', 'Email support'], cta: 'Start building', featured: true },
+  { name: 'Scale', price: 'Custom', detail: 'For teams with serious volume', features: ['Unlimited requests', 'Dedicated support', 'Custom rate limits', 'SLA & data controls'], cta: 'Talk to sales' },
+]
+
+const navItems = [
+  { label: 'Overview', icon: Gauge },
+  { label: 'API Keys', icon: KeyRound },
+  { label: 'Usage', icon: BarChart3 },
+  { label: 'Billing', icon: CreditCard },
+  { label: 'Docs', icon: BookOpen },
+]
+
 export default function Page() {
+  const [active, setActive] = useState('Overview')
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [copied, setCopied] = useState(false)
+  const [showDashboard, setShowDashboard] = useState(false)
+
+  const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+
   return (
-    <main
-      style={{
-        colorScheme: 'light dark',
-        position: 'relative',
-        display: 'flex',
-        minHeight: '100vh',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: 'light-dark(#fff, #000)',
-        color: 'light-dark(#000, #fff)',
-      }}
-    >
-      <svg
-        aria-hidden="true"
-        style={{ width: 80, height: 80 }}
-        width={80}
-        height={80}
-        fill="none"
-        viewBox="0 0 20 20"
-        xmlns="http://www.w3.org/2000/svg"
-        stroke="currentColor"
-        strokeWidth="0.5"
-      >
-        <path
-          d="M14.2 14.2H17V6.9375C17 4.76288 15.2371 3 13.0625 3H5.8V5.8M14.2 14.2V7.79063L7.79062 14.2H14.2ZM14.2 14.2V17H6.9375C4.76288 17 3 15.2371 3 13.0625V5.8H5.8M5.8 5.8V12.2313L12.2313 5.8H5.8Z"
-          strokeLinejoin="round"
-        />
-      </svg>
-      <p
-        style={{
-          position: 'absolute',
-          left: '50%',
-          top: 'calc(50% + 56px)',
-          transform: 'translateX(-50%)',
-          whiteSpace: 'nowrap',
-          fontSize: '14px',
-          fontWeight: 500,
-          color: 'light-dark(#71717a, #a1a1aa)',
-        }}
-      >
-        Your v0 generation will show here.
-      </p>
+    <main className="min-h-screen overflow-x-hidden bg-[#07070a] text-white selection:bg-violet-500/30">
+      <div className="pointer-events-none fixed inset-0 -z-0 bg-[radial-gradient(circle_at_50%_-20%,rgba(124,58,237,0.18),transparent_38%),radial-gradient(circle_at_100%_30%,rgba(37,99,235,0.1),transparent_30%)]" />
+      <header className="relative z-20 mx-auto flex max-w-7xl items-center justify-between px-5 py-5 lg:px-8">
+        <button onClick={() => { setShowDashboard(false); window.scrollTo({ top: 0, behavior: 'smooth' }) }} className="flex items-center gap-2.5" aria-label="Orca home">
+          <span className="grid size-8 place-items-center rounded-lg bg-white text-black"><Layers3 className="size-4" /></span>
+          <span className="text-[15px] font-semibold tracking-tight">orcarouter</span>
+        </button>
+        <nav className="hidden items-center gap-8 text-sm text-zinc-400 md:flex">
+          <button onClick={() => scrollTo('models')} className="transition hover:text-white">Models</button>
+          <button onClick={() => scrollTo('pricing')} className="transition hover:text-white">Pricing</button>
+          <button onClick={() => scrollTo('docs')} className="transition hover:text-white">Docs</button>
+        </nav>
+        <div className="hidden items-center gap-3 md:flex">
+          <button onClick={() => setShowDashboard(true)} className="rounded-lg px-3 py-2 text-sm text-zinc-400 transition hover:text-white">Dashboard</button>
+          <button onClick={() => setShowDashboard(true)} className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-black transition hover:bg-zinc-200">Get started</button>
+        </div>
+        <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">{menuOpen ? <X /> : <Menu />}</button>
+      </header>
+      {menuOpen && <div className="relative z-20 mx-5 flex flex-col gap-4 rounded-xl border border-white/10 bg-zinc-900 p-5 text-sm text-zinc-300 md:hidden"><button onClick={() => { scrollTo('models'); setMenuOpen(false) }}>Models</button><button onClick={() => { scrollTo('pricing'); setMenuOpen(false) }}>Pricing</button><button onClick={() => { setShowDashboard(true); setMenuOpen(false) }}>Dashboard</button></div>}
+
+      {!showDashboard ? <>
+        <section className="relative z-10 mx-auto max-w-5xl px-5 pb-28 pt-24 text-center lg:pt-36">
+          <div className="mx-auto mb-7 inline-flex items-center gap-2 rounded-full border border-violet-400/20 bg-violet-400/10 px-3 py-1.5 text-xs font-medium text-violet-200"><Sparkles className="size-3.5" /> One API. Every model.</div>
+          <h1 className="mx-auto max-w-4xl text-5xl font-semibold leading-[1.05] tracking-[-0.055em] text-white sm:text-7xl">The unified AI gateway<br /><span className="bg-gradient-to-r from-violet-300 via-white to-cyan-300 bg-clip-text text-transparent">for what&apos;s next.</span></h1>
+          <p className="mx-auto mt-7 max-w-2xl text-base leading-7 text-zinc-400 sm:text-lg">Access the world&apos;s best AI models through one fast, reliable API. Route, compare, and scale without rewriting your stack.</p>
+          <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row"><button onClick={() => setShowDashboard(true)} className="flex items-center gap-2 rounded-lg bg-white px-5 py-3 text-sm font-semibold text-black transition hover:bg-zinc-200">Start building <ArrowRight className="size-4" /></button><button onClick={() => scrollTo('models')} className="rounded-lg border border-white/15 px-5 py-3 text-sm font-medium text-zinc-200 transition hover:border-white/30 hover:bg-white/5">Explore models</button></div>
+          <div className="mx-auto mt-20 flex max-w-2xl items-center justify-center gap-8 border-t border-white/10 pt-6 text-xs text-zinc-500"><span className="flex items-center gap-2"><Zap className="size-3.5 text-violet-300" /> 99.99% uptime</span><span className="flex items-center gap-2"><ShieldCheck className="size-3.5 text-violet-300" /> SOC 2 ready</span><span className="hidden items-center gap-2 sm:flex"><TrendingUp className="size-3.5 text-violet-300" /> 200+ models</span></div>
+        </section>
+
+        <section id="models" className="relative z-10 mx-auto max-w-7xl scroll-mt-16 px-5 py-24 lg:px-8"><div className="mb-10 flex items-end justify-between"><div><p className="mb-3 text-sm font-medium text-violet-300">THE MODEL LAYER</p><h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">Every model, one interface.</h2><p className="mt-3 text-zinc-400">Pick the right intelligence for every request.</p></div><button className="hidden items-center gap-2 text-sm text-zinc-300 hover:text-white sm:flex">View all models <ArrowRight className="size-4" /></button></div><div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{models.map((model) => <div key={model.name} className="group rounded-xl border border-white/10 bg-white/[0.035] p-5 transition hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.06]"><div className="mb-8 flex items-start justify-between"><div className={`grid size-10 place-items-center rounded-lg bg-${model.tone}-400/15 text-${model.tone}-200`}><Code2 className="size-5" /></div><span className="rounded-full border border-white/10 px-2 py-1 text-[10px] text-zinc-400">{model.tag}</span></div><h3 className="font-medium">{model.name}</h3><p className="mt-1 text-sm text-zinc-500">{model.provider} · {model.type}</p><div className="mt-5 border-t border-white/10 pt-4 text-xs text-zinc-400"><span className="text-zinc-300">{model.price}</span><span className="ml-1">per 1M tokens</span></div></div>)}</div></section>
+
+        <section className="relative z-10 border-y border-white/10 bg-white/[0.02] px-5 py-24"><div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1fr_1.05fr] lg:px-3"><div><p className="mb-3 text-sm font-medium text-violet-300">BUILT FOR DEVELOPERS</p><h2 className="max-w-lg text-3xl font-semibold tracking-tight sm:text-4xl">One line to start.<br />Infinite room to grow.</h2><p className="mt-5 max-w-md leading-7 text-zinc-400">Drop into your existing OpenAI-compatible stack. Switch models, add fallbacks, and ship with confidence.</p><button onClick={() => setShowDashboard(true)} className="mt-7 flex items-center gap-2 text-sm font-medium text-white hover:text-violet-200">Read the docs <ArrowRight className="size-4" /></button></div><div id="docs" className="rounded-2xl border border-white/10 bg-[#0d0d12] p-1 shadow-2xl shadow-violet-950/20"><div className="flex items-center gap-1 border-b border-white/10 px-4 py-3"><span className="size-2 rounded-full bg-red-400/70" /><span className="size-2 rounded-full bg-yellow-400/70" /><span className="size-2 rounded-full bg-green-400/70" /><span className="ml-3 text-xs text-zinc-600">request.ts</span></div><pre className="overflow-x-auto whitespace-pre-wrap p-5 text-xs leading-7 text-zinc-300"><code>{`const response = await fetch("https://api.orcarouter.ai/v1/chat", {\n  method: "POST",\n  headers: {\n    "Authorization": \`Bearer \${API_KEY}\`\n  },\n  body: JSON.stringify({\n    model: "anthropic/claude-3.5-sonnet",\n    messages: [{ role: "user", content: prompt }]\n  })\n})`}</code></pre></div></div></section>
+
+        <section id="pricing" className="relative z-10 mx-auto max-w-7xl scroll-mt-16 px-5 py-24 lg:px-8"><div className="mb-10 text-center"><p className="mb-3 text-sm font-medium text-violet-300">SIMPLE PRICING</p><h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">Start free. Scale when ready.</h2><p className="mt-3 text-zinc-400">No hidden fees. No lock-in. Just better AI economics.</p></div><div className="grid gap-4 lg:grid-cols-3">{plans.map((plan) => <div key={plan.name} className={`relative rounded-2xl border p-7 ${plan.featured ? 'border-violet-400/50 bg-violet-400/[0.08] shadow-xl shadow-violet-950/20' : 'border-white/10 bg-white/[0.035]'}`}>{plan.featured && <div className="absolute -top-3 left-6 rounded-full bg-violet-400 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-white">Most popular</div>}<h3 className="text-lg font-medium">{plan.name}</h3><p className="mt-2 text-sm text-zinc-400">{plan.detail}</p><div className="mt-7 flex items-end gap-1"><span className="text-4xl font-semibold tracking-tight">{plan.price}</span>{plan.price !== 'Custom' && <span className="mb-1 text-sm text-zinc-500">/ month</span>}</div><button onClick={() => setShowDashboard(true)} className={`mt-7 w-full rounded-lg px-4 py-3 text-sm font-medium ${plan.featured ? 'bg-white text-black hover:bg-zinc-200' : 'border border-white/15 text-white hover:bg-white/10'}`}>{plan.cta}</button><div className="mt-7 flex flex-col gap-3 border-t border-white/10 pt-6">{plan.features.map((f) => <div key={f} className="flex items-center gap-2 text-sm text-zinc-300"><Check className="size-4 text-violet-300" />{f}</div>)}</div></div>)}</div><div className="mx-auto mt-5 max-w-md rounded-xl border border-white/10 bg-white/[0.025] p-5 text-center"><p className="text-sm font-medium">Prefer usage-based pricing?</p><p className="mt-1 text-xs text-zinc-500">Pay only for what you use with our flexible PAYG plan.</p><button onClick={() => setShowDashboard(true)} className="mt-3 text-sm font-medium text-violet-300 hover:text-violet-200">Explore PAYG <ArrowRight className="ml-1 inline size-3.5" /></button></div></section>
+        <footer className="relative z-10 border-t border-white/10 px-5 py-8"><div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 text-xs text-zinc-500 sm:flex-row lg:px-3"><span>© 2026 orcarouter. Built for the next generation of AI.</span><div className="flex gap-5"><button>Privacy</button><button>Terms</button><button>Status</button></div></div></footer>
+      </> : <Dashboard active={active} setActive={setActive} copied={copied} setCopied={setCopied} onClose={() => setShowDashboard(false)} />}
     </main>
   )
 }
+
+function Dashboard({ active, setActive, copied, setCopied, onClose }: { active: string; setActive: (value: string) => void; copied: boolean; setCopied: (value: boolean) => void; onClose: () => void }) {
+  return <div className="relative z-10 mx-auto flex min-h-[calc(100vh-80px)] max-w-7xl gap-0 px-4 pb-10 lg:px-8"><aside className="hidden w-56 shrink-0 border-r border-white/10 pr-6 md:block"><div className="mb-9 mt-7 text-xs font-semibold uppercase tracking-widest text-zinc-500">Workspace</div><div className="flex flex-col gap-1">{navItems.map(({ label, icon: Icon }) => <button key={label} onClick={() => setActive(label)} className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm ${active === label ? 'bg-white/10 text-white' : 'text-zinc-500 hover:bg-white/5 hover:text-zinc-200'}`}><Icon className="size-4" />{label}</button>)}</div><div className="mt-10 border-t border-white/10 pt-5"><button onClick={onClose} className="flex items-center gap-3 px-3 py-2 text-sm text-zinc-500 hover:text-white"><ArrowRight className="size-4 rotate-180" />Back to home</button></div></aside><section className="min-w-0 flex-1 px-1 md:pl-8"><div className="flex items-center justify-between border-b border-white/10 py-5"><div><p className="text-xs text-zinc-500">Workspace / {active}</p><h1 className="mt-1 text-xl font-semibold">{active}</h1></div><div className="flex items-center gap-3"><span className="hidden text-xs text-zinc-500 sm:block">Acme Inc.</span><div className="grid size-8 place-items-center rounded-full bg-gradient-to-br from-violet-400 to-cyan-400 text-xs font-bold text-white">AC</div></div></div>{active === 'Overview' && <Overview copied={copied} setCopied={setCopied} />}{active === 'API Keys' && <ApiKeys />}{active === 'Usage' && <Usage />}{active === 'Billing' && <Billing />}{active === 'Docs' && <Docs />}</section></div>
+}
+
+function Overview({ copied, setCopied }: { copied: boolean; setCopied: (value: boolean) => void }) { return <div className="flex flex-col gap-6 py-8"><div className="grid gap-4 sm:grid-cols-3"><Stat label="Monthly spend" value="$42.18" trend="+12.4%" /><Stat label="Total requests" value="128.4K" trend="+8.2%" /><Stat label="Avg. latency" value="842ms" trend="-14.6%" /></div><div className="grid gap-6 lg:grid-cols-[1.35fr_1fr]"><div className="rounded-xl border border-white/10 bg-white/[0.03] p-5"><div className="flex items-center justify-between"><div><h2 className="font-medium">Usage overview</h2><p className="mt-1 text-xs text-zinc-500">Requests over the last 30 days</p></div><button className="flex items-center gap-1 text-xs text-zinc-400">Last 30 days <ChevronDown className="size-3" /></button></div><div className="mt-8 flex h-44 items-end gap-2">{[35,48,42,60,55,72,68,82,76,93,78,88,70,96,86,100,90,78,84,73,91,83,95,87,100,92,88,94,98,100].map((h, i) => <div key={i} className="flex-1 rounded-t-sm bg-violet-400/70 transition hover:bg-violet-300" style={{ height: `${h}%` }} />)}</div><div className="mt-3 flex justify-between text-[10px] text-zinc-600"><span>May 18</span><span>May 25</span><span>Jun 01</span><span>Jun 17</span></div></div><div className="rounded-xl border border-white/10 bg-white/[0.03] p-5"><h2 className="font-medium">Quick start</h2><p className="mt-1 text-xs text-zinc-500">Make your first request in minutes.</p><div className="mt-6 rounded-lg bg-black/40 p-4 font-mono text-xs text-zinc-400"><span className="text-violet-300">curl</span> https://api.orcarouter.ai/v1/chat</div><button onClick={() => { navigator.clipboard?.writeText('curl https://api.orcarouter.ai/v1/chat'); setCopied(true); setTimeout(() => setCopied(false), 1500) }} className="mt-3 flex items-center gap-2 text-xs text-zinc-400 hover:text-white">{copied ? <Check className="size-3.5 text-green-300" /> : <Copy className="size-3.5" />}{copied ? 'Copied' : 'Copy command'}</button></div></div></div> }
+
+function Stat({ label, value, trend }: { label: string; value: string; trend: string }) { return <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5"><p className="text-xs text-zinc-500">{label}</p><div className="mt-3 flex items-end justify-between"><span className="text-2xl font-semibold">{value}</span><span className="text-xs text-emerald-300">{trend}</span></div></div> }
+function ApiKeys() { return <div className="flex flex-col gap-5 py-8"><div className="flex items-center justify-between"><div><h2 className="font-medium">Your API keys</h2><p className="mt-1 text-sm text-zinc-500">Keys grant access to your workspace.</p></div><button className="flex items-center gap-2 rounded-lg bg-white px-3 py-2 text-xs font-medium text-black"><Plus className="size-3.5" />Create key</button></div><div className="rounded-xl border border-white/10 bg-white/[0.03] p-4"><div className="flex items-center justify-between"><div><p className="text-sm">Production key</p><p className="mt-1 font-mono text-xs text-zinc-500">sk-orca-••••••••••••••••9f42</p></div><button className="rounded-lg border border-white/10 p-2 text-zinc-400 hover:text-white"><Copy className="size-4" /></button></div><div className="mt-4 flex gap-5 border-t border-white/10 pt-3 text-xs text-zinc-500"><span>Created Jun 12, 2026</span><span>Last used 2 min ago</span></div></div></div> }
+function Usage() { return <div className="py-8"><h2 className="font-medium">Usage & analytics</h2><p className="mt-1 text-sm text-zinc-500">Track your model performance and spend.</p><div className="mt-6 grid gap-4 sm:grid-cols-2"><Stat label="Input tokens" value="2.4M" trend="+18%" /><Stat label="Output tokens" value="841K" trend="+9%" /></div></div> }
+function Billing() { return <div className="py-8"><h2 className="font-medium">Billing</h2><p className="mt-1 text-sm text-zinc-500">Manage your plan and payment details.</p><div className="mt-6 rounded-xl border border-white/10 bg-white/[0.03] p-5"><div className="flex items-center justify-between"><div><p className="text-xs text-zinc-500">Current plan</p><p className="mt-1 text-lg font-medium">Pro <span className="ml-2 rounded-full bg-violet-400/15 px-2 py-1 text-[10px] text-violet-200">Active</span></p></div><button className="rounded-lg border border-white/15 px-3 py-2 text-xs">Manage plan</button></div></div></div> }
+function Docs() { return <div className="py-8"><h2 className="font-medium">Developer docs</h2><p className="mt-1 text-sm text-zinc-500">Everything you need to build with orcarouter.</p><div className="mt-6 grid gap-3 sm:grid-cols-2"><div className="rounded-xl border border-white/10 bg-white/[0.03] p-5"><Terminal className="size-5 text-violet-300" /><h3 className="mt-4 text-sm font-medium">Quickstart</h3><p className="mt-1 text-xs text-zinc-500">Make your first request with our compatible API.</p></div><div className="rounded-xl border border-white/10 bg-white/[0.03] p-5"><CircleHelp className="size-5 text-violet-300" /><h3 className="mt-4 text-sm font-medium">API reference</h3><p className="mt-1 text-xs text-zinc-500">Explore endpoints, parameters, and examples.</p></div></div></div> }
