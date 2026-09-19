@@ -51,6 +51,15 @@ export default function Page() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [copied, setCopied] = useState(false)
   const [showDashboard, setShowDashboard] = useState(false)
+  const [view, setView] = useState<'home' | 'models' | 'pricing' | 'docs' | 'auth'>('home')
+  const [authMode, setAuthMode] = useState<'login' | 'signup'>('signup')
+
+  const openView = (nextView: typeof view) => {
+    setShowDashboard(false)
+    setView(nextView)
+    setMenuOpen(false)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 
   const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
 
@@ -58,24 +67,24 @@ export default function Page() {
     <main className="min-h-screen overflow-x-hidden bg-[#07070a] text-white selection:bg-violet-500/30">
       <div className="pointer-events-none fixed inset-0 -z-0 bg-[radial-gradient(circle_at_50%_-20%,rgba(124,58,237,0.18),transparent_38%),radial-gradient(circle_at_100%_30%,rgba(37,99,235,0.1),transparent_30%)]" />
       <header className="relative z-20 mx-auto flex max-w-7xl items-center justify-between px-5 py-5 lg:px-8">
-        <button onClick={() => { setShowDashboard(false); window.scrollTo({ top: 0, behavior: 'smooth' }) }} className="flex items-center gap-2.5" aria-label="Orca home">
+        <button onClick={() => openView('home')} className="flex items-center gap-2.5" aria-label="Orca home">
           <span className="grid size-8 place-items-center rounded-lg bg-white text-black"><Layers3 className="size-4" /></span>
           <span className="text-[15px] font-semibold tracking-tight">orcarouter</span>
         </button>
         <nav className="hidden items-center gap-8 text-sm text-zinc-400 md:flex">
-          <button onClick={() => scrollTo('models')} className="transition hover:text-white">Models</button>
-          <button onClick={() => scrollTo('pricing')} className="transition hover:text-white">Pricing</button>
-          <button onClick={() => scrollTo('docs')} className="transition hover:text-white">Docs</button>
+          <button onClick={() => openView('models')} className="transition hover:text-white">Models</button>
+          <button onClick={() => openView('pricing')} className="transition hover:text-white">Pricing</button>
+          <button onClick={() => openView('docs')} className="transition hover:text-white">Docs</button>
         </nav>
         <div className="hidden items-center gap-3 md:flex">
-          <button onClick={() => setShowDashboard(true)} className="rounded-lg px-3 py-2 text-sm text-zinc-400 transition hover:text-white">Dashboard</button>
-          <button onClick={() => setShowDashboard(true)} className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-black transition hover:bg-zinc-200">Get started</button>
+          <button onClick={() => openView('auth')} className="rounded-lg px-3 py-2 text-sm text-zinc-400 transition hover:text-white">Log in</button>
+          <button onClick={() => openView('auth')} className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-black transition hover:bg-zinc-200">Get started</button>
         </div>
         <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">{menuOpen ? <X /> : <Menu />}</button>
       </header>
-      {menuOpen && <div className="relative z-20 mx-5 flex flex-col gap-4 rounded-xl border border-white/10 bg-zinc-900 p-5 text-sm text-zinc-300 md:hidden"><button onClick={() => { scrollTo('models'); setMenuOpen(false) }}>Models</button><button onClick={() => { scrollTo('pricing'); setMenuOpen(false) }}>Pricing</button><button onClick={() => { setShowDashboard(true); setMenuOpen(false) }}>Dashboard</button></div>}
+      {menuOpen && <div className="relative z-20 mx-5 flex flex-col gap-4 rounded-xl border border-white/10 bg-zinc-900 p-5 text-sm text-zinc-300 md:hidden"><button onClick={() => openView('models')}>Models</button><button onClick={() => openView('pricing')}>Pricing</button><button onClick={() => openView('docs')}>Docs</button><button onClick={() => openView('auth')}>Log in / Sign up</button></div>}
 
-      {!showDashboard ? <>
+      {!showDashboard && view === 'home' ? <>
         <section className="relative z-10 mx-auto max-w-5xl px-5 pb-28 pt-24 text-center lg:pt-36">
           <div className="mx-auto mb-7 inline-flex items-center gap-2 rounded-full border border-violet-400/20 bg-violet-400/10 px-3 py-1.5 text-xs font-medium text-violet-200"><Sparkles className="size-3.5" /> One API. Every model.</div>
           <h1 className="mx-auto max-w-4xl text-5xl font-semibold leading-[1.05] tracking-[-0.055em] text-white sm:text-7xl">The unified AI gateway<br /><span className="bg-gradient-to-r from-violet-300 via-white to-cyan-300 bg-clip-text text-transparent">for what&apos;s next.</span></h1>
@@ -90,9 +99,35 @@ export default function Page() {
 
         <section id="pricing" className="relative z-10 mx-auto max-w-7xl scroll-mt-16 px-5 py-24 lg:px-8"><div className="mb-10 text-center"><p className="mb-3 text-sm font-medium text-violet-300">SIMPLE PRICING</p><h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">Start free. Scale when ready.</h2><p className="mt-3 text-zinc-400">No hidden fees. No lock-in. Just better AI economics.</p></div><div className="grid gap-4 lg:grid-cols-3">{plans.map((plan) => <div key={plan.name} className={`relative rounded-2xl border p-7 ${plan.featured ? 'border-violet-400/50 bg-violet-400/[0.08] shadow-xl shadow-violet-950/20' : 'border-white/10 bg-white/[0.035]'}`}>{plan.featured && <div className="absolute -top-3 left-6 rounded-full bg-violet-400 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-white">Most popular</div>}<h3 className="text-lg font-medium">{plan.name}</h3><p className="mt-2 text-sm text-zinc-400">{plan.detail}</p><div className="mt-7 flex items-end gap-1"><span className="text-4xl font-semibold tracking-tight">{plan.price}</span>{plan.price !== 'Custom' && <span className="mb-1 text-sm text-zinc-500">/ month</span>}</div><button onClick={() => setShowDashboard(true)} className={`mt-7 w-full rounded-lg px-4 py-3 text-sm font-medium ${plan.featured ? 'bg-white text-black hover:bg-zinc-200' : 'border border-white/15 text-white hover:bg-white/10'}`}>{plan.cta}</button><div className="mt-7 flex flex-col gap-3 border-t border-white/10 pt-6">{plan.features.map((f) => <div key={f} className="flex items-center gap-2 text-sm text-zinc-300"><Check className="size-4 text-violet-300" />{f}</div>)}</div></div>)}</div><div className="mx-auto mt-5 max-w-md rounded-xl border border-white/10 bg-white/[0.025] p-5 text-center"><p className="text-sm font-medium">Prefer usage-based pricing?</p><p className="mt-1 text-xs text-zinc-500">Pay only for what you use with our flexible PAYG plan.</p><button onClick={() => setShowDashboard(true)} className="mt-3 text-sm font-medium text-violet-300 hover:text-violet-200">Explore PAYG <ArrowRight className="ml-1 inline size-3.5" /></button></div></section>
         <footer className="relative z-10 border-t border-white/10 px-5 py-8"><div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 text-xs text-zinc-500 sm:flex-row lg:px-3"><span>© 2026 orcarouter. Built for the next generation of AI.</span><div className="flex gap-5"><button>Privacy</button><button>Terms</button><button>Status</button></div></div></footer>
-      </> : <Dashboard active={active} setActive={setActive} copied={copied} setCopied={setCopied} onClose={() => setShowDashboard(false)} />}
+      </> : showDashboard ? <Dashboard active={active} setActive={setActive} copied={copied} setCopied={setCopied} onClose={() => openView('home')} /> : <>
+        {view === 'models' && <ModelsPage onBack={() => openView('home')} />}
+        {view === 'pricing' && <PricingPage onBack={() => openView('home')} onStart={() => openView('auth')} />}
+        {view === 'docs' && <DocsPage onBack={() => openView('home')} />}
+        {view === 'auth' && <AuthPage mode={authMode} setMode={setAuthMode} onBack={() => openView('home')} />}
+      </>}
     </main>
   )
+}
+
+function PageFrame({ eyebrow, title, description, onBack, children }: { eyebrow: string; title: string; description: string; onBack: () => void; children: React.ReactNode }) {
+  return <div className="relative z-10 mx-auto min-h-[calc(100vh-80px)] max-w-7xl px-5 pb-20 pt-16 lg:px-8"><button onClick={onBack} className="mb-12 flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"><ArrowRight className="size-4 rotate-180" />Back to home</button><div className="mx-auto max-w-5xl"><p className="mb-3 text-sm font-medium text-violet-300">{eyebrow}</p><h1 className="text-4xl font-semibold tracking-tight sm:text-6xl">{title}</h1><p className="mt-5 max-w-2xl text-lg leading-8 text-zinc-400">{description}</p>{children}</div></div>
+}
+
+function ModelsPage({ onBack }: { onBack: () => void }) {
+  return <PageFrame eyebrow="THE MODEL CATALOG" title="The right model for every request." description="Compare leading models by capability, speed, context window, and price — all through one OpenAI-compatible API." onBack={onBack}><div className="mt-12 flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-zinc-500"><Search className="size-4" />Search models <span className="ml-auto rounded border border-white/10 px-2 py-1 text-[10px]">⌘ K</span></div><div className="mt-5 overflow-hidden rounded-2xl border border-white/10"><div className="hidden grid-cols-[1.4fr_1fr_1fr_1fr] border-b border-white/10 bg-white/[0.03] px-5 py-3 text-xs text-zinc-500 sm:grid"><span>Model</span><span>Provider</span><span>Context</span><span>Pricing / 1M tokens</span></div>{[...models, { name: 'Mistral Large', provider: 'Mistral', type: 'Chat', price: '$2.00 / $6.00', tag: 'Efficient', tone: 'cyan' }].map((model) => <div key={model.name} className="grid gap-2 border-b border-white/10 px-5 py-5 last:border-0 sm:grid-cols-[1.4fr_1fr_1fr_1fr] sm:items-center"><div><p className="font-medium">{model.name}</p><p className="mt-1 text-xs text-zinc-500">{model.type} · <span className="text-violet-300">{model.tag}</span></p></div><span className="text-sm text-zinc-400">{model.provider}</span><span className="text-sm text-zinc-400">128K tokens</span><span className="text-sm text-zinc-300">{model.price}</span></div>)}</div></PageFrame>
+}
+
+function PricingPage({ onBack, onStart }: { onBack: () => void; onStart: () => void }) {
+  return <PageFrame eyebrow="SIMPLE, TRANSPARENT PRICING" title="Plans that scale with you." description="Start experimenting for free, then choose the plan that fits your production traffic. PAYG is always available." onBack={onBack}><div className="mt-12 grid gap-4 lg:grid-cols-3">{plans.map((plan) => <div key={plan.name} className={`relative rounded-2xl border p-7 ${plan.featured ? 'border-violet-400/50 bg-violet-400/[0.08]' : 'border-white/10 bg-white/[0.03]'}`}>{plan.featured && <span className="absolute -top-3 left-6 rounded-full bg-violet-400 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider">Most popular</span>}<h2 className="text-lg font-medium">{plan.name}</h2><p className="mt-2 text-sm text-zinc-400">{plan.detail}</p><p className="mt-8 text-4xl font-semibold">{plan.price}<span className="ml-1 text-sm font-normal text-zinc-500">{plan.price !== 'Custom' && '/ month'}</span></p><button onClick={onStart} className={`mt-7 w-full rounded-lg px-4 py-3 text-sm font-medium ${plan.featured ? 'bg-white text-black' : 'border border-white/15'}`}>{plan.cta}</button><div className="mt-7 flex flex-col gap-3 border-t border-white/10 pt-6">{plan.features.map((f) => <p key={f} className="flex items-center gap-2 text-sm text-zinc-300"><Check className="size-4 text-violet-300" />{f}</p>)}</div></div>)}</div><div className="mt-4 rounded-2xl border border-cyan-300/20 bg-cyan-300/[0.06] p-7"><div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center"><div><p className="text-lg font-medium">PAYG — pay only for what you use.</p><p className="mt-2 text-sm text-zinc-400">No subscription required. Transparent token-based billing with automatic spend limits.</p></div><button onClick={onStart} className="rounded-lg border border-white/15 px-4 py-3 text-sm font-medium">Use PAYG</button></div></div></PageFrame>
+}
+
+function DocsPage({ onBack }: { onBack: () => void }) {
+  return <PageFrame eyebrow="DEVELOPER DOCS" title="Ship with one API." description="Everything you need to route requests, compare models, and build reliable AI features." onBack={onBack}><div className="mt-12 grid gap-4 sm:grid-cols-2"><div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6"><Terminal className="size-5 text-violet-300" /><h2 className="mt-5 font-medium">Quickstart</h2><p className="mt-2 text-sm leading-6 text-zinc-500">Make your first request in under five minutes with our OpenAI-compatible endpoint.</p><pre className="mt-5 overflow-x-auto rounded-lg bg-black/40 p-4 text-xs leading-6 text-zinc-400">curl https://api.orcarouter.ai/v1/chat</pre></div><div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6"><BookOpen className="size-5 text-cyan-300" /><h2 className="mt-5 font-medium">API reference</h2><p className="mt-2 text-sm leading-6 text-zinc-500">Explore authentication, streaming, model routing, retries, and usage endpoints.</p><button className="mt-5 flex items-center gap-2 text-sm text-violet-300">Read reference <ArrowRight className="size-4" /></button></div></div></PageFrame>
+}
+
+function AuthPage({ mode, setMode, onBack }: { mode: 'login' | 'signup'; setMode: (mode: 'login' | 'signup') => void; onBack: () => void }) {
+  const isSignup = mode === 'signup'
+  return <div className="relative z-10 mx-auto flex min-h-[calc(100vh-80px)] max-w-7xl items-center justify-center px-5 pb-20 pt-10"><div className="w-full max-w-md rounded-2xl border border-white/10 bg-white/[0.04] p-7 shadow-2xl shadow-violet-950/20 sm:p-9"><button onClick={onBack} className="mb-10 flex items-center gap-2 text-sm text-zinc-500 hover:text-white"><ArrowRight className="size-4 rotate-180" />Back to home</button><div className="mb-8"><h1 className="text-2xl font-semibold">{isSignup ? 'Create your account' : 'Welcome back'}</h1><p className="mt-2 text-sm text-zinc-500">{isSignup ? 'Start building with every model in one place.' : 'Log in to access your gateway workspace.'}</p></div><form onSubmit={(event) => event.preventDefault()} className="flex flex-col gap-4"><label className="flex flex-col gap-2 text-sm text-zinc-300">Email<input required type="email" placeholder="you@company.com" className="rounded-lg border border-white/10 bg-black/20 px-3 py-3 text-white outline-none placeholder:text-zinc-600 focus:border-violet-400/60" /></label><label className="flex flex-col gap-2 text-sm text-zinc-300">Password<input required type="password" placeholder="••••••••" className="rounded-lg border border-white/10 bg-black/20 px-3 py-3 text-white outline-none placeholder:text-zinc-600 focus:border-violet-400/60" /></label><button className="mt-2 rounded-lg bg-white px-4 py-3 text-sm font-semibold text-black">{isSignup ? 'Create account' : 'Log in'}</button></form><p className="mt-7 text-center text-sm text-zinc-500">{isSignup ? 'Already have an account?' : 'New to orcarouter?'} <button onClick={() => setMode(isSignup ? 'login' : 'signup')} className="text-violet-300 hover:text-white">{isSignup ? 'Log in' : 'Sign up'}</button></p></div></div>
 }
 
 function Dashboard({ active, setActive, copied, setCopied, onClose }: { active: string; setActive: (value: string) => void; copied: boolean; setCopied: (value: boolean) => void; onClose: () => void }) {
