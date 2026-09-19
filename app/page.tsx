@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   ArrowRight,
   BarChart3,
@@ -11,6 +11,8 @@ import {
   Code2,
   Copy,
   CreditCard,
+  Moon,
+  Sun,
   Gauge,
   KeyRound,
   Layers3,
@@ -53,6 +55,12 @@ export default function Page() {
   const [showDashboard, setShowDashboard] = useState(false)
   const [view, setView] = useState<'home' | 'models' | 'pricing' | 'docs' | 'auth'>('home')
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('signup')
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', theme === 'dark')
+    document.documentElement.classList.toggle('light', theme === 'light')
+  }, [theme])
 
   const openView = (nextView: typeof view) => {
     setShowDashboard(false)
@@ -65,7 +73,7 @@ export default function Page() {
 
   return (
     <main className="theme-shell min-h-screen overflow-x-hidden bg-background text-foreground selection:bg-orange-500/30">
-      <div className="pointer-events-none fixed inset-0 -z-0 bg-[radial-gradient(circle_at_50%_-20%,rgba(124,58,237,0.18),transparent_38%),radial-gradient(circle_at_100%_30%,rgba(37,99,235,0.1),transparent_30%)]" />
+      <div className="pointer-events-none fixed inset-0 -z-0 bg-[radial-gradient(circle_at_50%_-20%,rgba(249,115,22,0.12),transparent_38%),radial-gradient(circle_at_100%_30%,rgba(120,53,15,0.1),transparent_30%)]" />
       <header className="relative z-20 mx-auto flex max-w-7xl items-center justify-between px-5 py-5 lg:px-8">
         <button onClick={() => openView('home')} className="flex items-center gap-2.5" aria-label="Orca home">
           <span className="grid size-8 place-items-center rounded-lg bg-foreground text-background"><Layers3 className="size-4" /></span>
@@ -77,12 +85,15 @@ export default function Page() {
           <button onClick={() => openView('docs')} className="transition hover:text-foreground">Docs</button>
         </nav>
         <div className="hidden items-center gap-3 md:flex">
+          <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="grid size-9 place-items-center rounded-lg border border-white/10 text-zinc-400 transition hover:bg-foreground/10 hover:text-foreground" aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`} title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>
+            {theme === 'dark' ? <Sun className="size-4" /> : <Moon className="size-4" />}
+          </button>
           <button onClick={() => openView('auth')} className="rounded-lg px-3 py-2 text-sm text-zinc-400 transition hover:text-foreground">Log in</button>
           <button onClick={() => openView('auth')} className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-background transition hover:bg-zinc-200">Get started</button>
         </div>
         <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">{menuOpen ? <X /> : <Menu />}</button>
       </header>
-      {menuOpen && <div className="relative z-20 mx-5 flex flex-col gap-4 rounded-xl border border-white/10 bg-zinc-900 p-5 text-sm text-zinc-300 md:hidden"><button onClick={() => openView('models')}>Models</button><button onClick={() => openView('pricing')}>Pricing</button><button onClick={() => openView('docs')}>Docs</button><button onClick={() => openView('auth')}>Log in / Sign up</button></div>}
+      {menuOpen && <div className="relative z-20 mx-5 flex flex-col gap-4 rounded-xl border border-white/10 bg-zinc-900 p-5 text-sm text-zinc-300 md:hidden"><button onClick={() => openView('models')}>Models</button><button onClick={() => openView('pricing')}>Pricing</button><button onClick={() => openView('docs')}>Docs</button><button onClick={() => openView('auth')}>Log in / Sign up</button><button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="flex items-center gap-2 border-t border-white/10 pt-4 text-left">{theme === 'dark' ? <Sun className="size-4" /> : <Moon className="size-4" />} Switch to {theme === 'dark' ? 'light' : 'dark'} mode</button></div>}
 
       {!showDashboard && view === 'home' ? <>
         <section className="relative z-10 mx-auto max-w-5xl px-5 pb-28 pt-24 text-center lg:pt-36">
