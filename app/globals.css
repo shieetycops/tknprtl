@@ -160,6 +160,65 @@
   body {
     @apply bg-background text-foreground;
   }
+  button,
+  [role="button"] {
+    cursor: pointer;
+  }
+  button:disabled,
+  [role="button"][aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+}
+
+.pricing-card {
+  isolation: isolate;
+  transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+}
+
+.pricing-card:hover {
+  transform: translateY(-6px);
+  border-color: color-mix(in oklch, var(--brand-orange-soft) 45%, transparent);
+  box-shadow: 0 18px 50px color-mix(in oklch, var(--brand-orange) 12%, transparent);
+}
+
+.pricing-card-featured {
+  animation: pricing-glow 4s ease-in-out infinite;
+}
+
+.pricing-card-featured::after {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(120deg, transparent 25%, color-mix(in oklch, var(--brand-orange-soft) 16%, transparent), transparent 75%);
+  background-size: 220% 100%;
+  content: "";
+  animation: pricing-shine 5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.code-terminal {
+  color: #e7e5e4;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.035), 0 18px 50px rgb(0 0 0 / 0.22);
+}
+
+@keyframes pricing-glow {
+  0%, 100% { box-shadow: 0 18px 48px rgb(234 88 12 / 0.12); }
+  50% { box-shadow: 0 22px 60px rgb(234 88 12 / 0.22); }
+}
+
+@keyframes pricing-shine {
+  0%, 35% { background-position: 200% 0; }
+  65%, 100% { background-position: -20% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pricing-card,
+  .pricing-card-featured,
+  .pricing-card-featured::after {
+    animation: none;
+    transition: none;
+  }
 }
 
 /* TokenPortal brand and comfortable contrast across system themes. */
