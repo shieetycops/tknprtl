@@ -3,15 +3,15 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'orcarouter — The unified AI gateway',
+  title: 'tokenportal — The unified AI gateway',
   description: 'Access every leading AI model through one fast, reliable API.',
 }
 
 export const viewport: Viewport = {
   colorScheme: 'light dark',
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: 'white' },
-    { media: '(prefers-color-scheme: dark)', color: 'black' },
+    { media: '(prefers-color-scheme: light)', color: '#fff7ed' },
+    { media: '(prefers-color-scheme: dark)', color: '#0c0a09' },
   ],
 }
 

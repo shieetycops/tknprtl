@@ -161,3 +161,38 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* TokenPortal brand and comfortable contrast across system themes. */
+.theme-shell {
+  --brand-orange: #f97316;
+  --brand-orange-soft: #fb923c;
+}
+
+@media (prefers-color-scheme: light) {
+  .theme-shell {
+    background: #fffaf5 !important;
+    color: #1c1917 !important;
+  }
+
+  .theme-shell .text-zinc-300,
+  .theme-shell .text-zinc-400 {
+    color: #57534e !important;
+  }
+
+  .theme-shell .text-zinc-500,
+  .theme-shell .text-zinc-600 {
+    color: #78716c !important;
+  }
+
+  .theme-shell [class*="border-white"] {
+    border-color: rgba(28, 25, 23, 0.12) !important;
+  }
+
+  .theme-shell [class*="bg-white/"] {
+    background-color: rgba(28, 25, 23, 0.035) !important;
+  }
+
+  .theme-shell [class*="bg-black/"] {
+    background-color: rgba(28, 25, 23, 0.045) !important;
+  }
+}
